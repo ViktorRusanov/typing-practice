@@ -1,4 +1,6 @@
 import "./styles.css";
+import { navigate } from '@reach/router';
+import { Client } from '../../entities/client';
 import Page from "../base";
 import Name from "./name";
 import Role from "./role";
@@ -12,6 +14,15 @@ import type { RouteComponentProps } from "@reach/router";
 export default function Dashboard(_: RouteComponentProps) {
   const currentUser = useCurrentUser();
   const [users, onUserUpdates] = useUsers();
+
+  if (!currentUser) {
+      return null
+  }
+
+  if (currentUser instanceof Client) {
+      navigate('/account');
+      return null
+  }
 
   const columns = [
     {

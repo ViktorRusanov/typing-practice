@@ -1,6 +1,6 @@
-import Services from "../services";
-import { navigate } from "@reach/router";
 import { useContext, useEffect } from "react";
+import { navigate } from "@reach/router";
+import Services from "../services";
 import { LogedInActionType, LogedInUser } from "../providers/loged-in-user";
 import type { User } from "../entities/user";
 

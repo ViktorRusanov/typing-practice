@@ -1,10 +1,13 @@
-import { Role } from "../entities/role";
-import { Admin } from "../entities/admin";
-import { Client } from "../entities/client";
-import { Moderator } from "../entities/moderator";
-import { Operation } from "../entities/operation";
-import type { User } from "../entities/user";
-import type { RoleToUser } from "../entities/role-to-user";
+import { ROLES_TO_OPERATIONS } from '../entities/roles-to-operations';
+import type { RolesToOperations } from '../entities/roles-to-operations';
+import { Admin } from '../entities/admin';
+import { Client } from '../entities/client';
+import { ValidEmail } from '../entities/email';
+import { Moderator } from '../entities/moderator';
+import { ValidPassword } from '../entities/password';
+import { Role } from '../entities/role';
+import type { RoleToUser } from '../entities/role-to-user';
+import type { User } from '../entities/user';
 
 export default class UserService {
   private users: readonly User[] = [];
@@ -34,14 +37,14 @@ export default class UserService {
     return this.users;
   }
 
-  getAvailableOperations(user: User, currenUser: User): Operation[] {
-    // Вам нужно поменять логику внутри getAvailableOperations для того, что бы это работало с логином
-    throw new Error("Not Implemented")
-    // if (user instanceof Admin || user instanceof Client) {
-    //   return [Operation.UPDATE_TO_MODERATOR];
-    // }
+  async getUserByCreds(email: ValidEmail, password: ValidPassword) {
+      await this.getAllUsers();
 
-    // return [Operation.UPDATE_TO_CLIENT, Operation.UPDATE_TO_ADMIN];
+      return this.users.find(user => user.email === email.value && user.password === password.value);
+  }
+
+  getAvailableOperations<U1 extends User, U2 extends User>(user: U1, currenUser: U2): RolesToOperations[U2['role']][U1['role']] {
+    return ROLES_TO_OPERATIONS[currenUser.role][user.role];
   }
 
   getConstructorByRole(role: Role) {
