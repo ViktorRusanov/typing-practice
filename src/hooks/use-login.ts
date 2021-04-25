@@ -1,5 +1,7 @@
 import { useContext, useEffect } from "react";
 import { navigate } from "@reach/router";
+import { ValidEmail } from '../entities/email';
+import { ValidPassword } from '../entities/password';
 import Services from "../services";
 import { LogedInActionType, LogedInUser } from "../providers/loged-in-user";
 import type { User } from "../entities/user";
@@ -17,7 +19,7 @@ export default function useLogin(credentials: Credentials | null): User | null {
     if (!credentials || !dispatch) {
       return;
     }
-    loginService.login(credentials.email, credentials.password)
+    loginService.login(ValidEmail.from(credentials.email), ValidPassword.from(credentials.password))
       .then((user: User) => dispatch!({ type: LogedInActionType.LOG_IN, payload: user }))
       .then(() => navigate("/"))
       .catch(e => alert(e.message));
