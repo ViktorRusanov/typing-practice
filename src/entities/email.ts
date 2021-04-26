@@ -1,14 +1,7 @@
-export class ValidEmail {
-    static from(email: string) {
-        if (email.includes('@')) {
-            return new ValidEmail(email);
-        }
+import * as t from 'runtypes';
 
-        throw new Error('Invalid email');
-    }
+export const ValidEmail = t.String
+    .withConstraint( email => email.includes('@'))
+    .withBrand('ValidEmail');
 
-    private readonly _type = Symbol('ValidEmail');
-
-    protected constructor(public readonly value: string) {
-    }
-}
+export type ValidEmail = t.Static<typeof ValidEmail>;

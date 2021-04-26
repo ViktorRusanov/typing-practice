@@ -1,14 +1,7 @@
-export class ValidPassword {
-    static from(password: string) {
-        if (password.length > 3) {
-            return new ValidPassword(password);
-        }
+import * as t from 'runtypes';
 
-        throw new Error('Password length should be more than 3 symbols');
-    }
+export const ValidPassword = t.String
+    .withConstraint(password => password.length > 3)
+    .withBrand('ValidPassword');
 
-    private readonly _type = Symbol('ValidPassword');
-
-    protected constructor(public readonly value: string) {
-    }
-}
+export type ValidPassword = t.Static<typeof ValidPassword>

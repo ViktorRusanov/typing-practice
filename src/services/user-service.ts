@@ -1,9 +1,9 @@
+import { ValidEmail } from '../entities/email';
+import { ValidPassword } from '../entities/password';
+import { ROLES_TO_OPERATIONS, RolesToOperations } from '../entities/roles-to-operations';
 import { Role } from "../entities/role";
 import { User } from "../entities/user";
-import { Admin } from "../entities/admin";
 import { castTo } from "../entities/role-to-user";
-import { Client } from "../entities/client";
-import { Operation } from "../entities/operation";
 import type { RoleToUser } from "../entities/role-to-user";
 
 export default class UserService {
@@ -31,11 +31,13 @@ export default class UserService {
     return this.users;
   }
 
-  getAvailableOperations(user: User) {
-    if (Admin.guard(user) || Client.guard(user)) {
-      return [Operation.UPDATE_TO_MODERATOR];
-    }
+  async getUserByCreds(email: ValidEmail, password: ValidPassword) {
+      await this.getAllUsers();
 
-    return [Operation.UPDATE_TO_CLIENT, Operation.UPDATE_TO_ADMIN];
+      return this.users.find(user => user.email === email && user.password === password);
+  }
+
+  getAvailableOperations<U1 extends User, U2 extends User>(user: U1, currenUser: U2): RolesToOperations[U2['role']][U1['role']] {
+    return ROLES_TO_OPERATIONS[currenUser.role][user.role];
   }
 }

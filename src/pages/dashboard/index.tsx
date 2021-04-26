@@ -18,8 +18,8 @@ export default function Dashboard(_: RouteComponentProps) {
   if (!currentUser) {
       return null
   }
-
-  if (currentUser instanceof Client) {
+debugger
+  if (Client.guard(currentUser)) {
       navigate('/account');
       return null
   }
