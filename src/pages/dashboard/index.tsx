@@ -1,25 +1,28 @@
-import "./styles.css";
+import type { RouteComponentProps } from '@reach/router';
 import { navigate } from '@reach/router';
-import { Client } from '../../entities/client';
-import Page from "../base";
-import Name from "./name";
-import Role from "./role";
-import Actions from "./actions";
-import useUsers from "../../hooks/use-users";
-import useCurrentUser from "../../hooks/use-current-user";
-import { Table, Breadcrumb } from "antd";
-import type { User } from "../../entities/user";
-import type { RouteComponentProps } from "@reach/router";
+import { Breadcrumb, Table } from 'antd';
+import { useContext } from 'react';
+import { Page as PageList } from '../../entities/page';
+import type { User } from '../../entities/user';
+import useCurrentUser from '../../hooks/use-current-user';
+import useUsers from '../../hooks/use-users';
+import Services from '../../services';
+import Page from '../base';
+import Actions from './actions';
+import Name from './name';
+import Role from './role';
+import './styles.css';
 
 export default function Dashboard(_: RouteComponentProps) {
+  const { accessToPageService } = useContext(Services);
   const currentUser = useCurrentUser();
   const [users, onUserUpdates] = useUsers();
 
   if (!currentUser) {
       return null
   }
-debugger
-  if (Client.guard(currentUser)) {
+
+  if (!accessToPageService.hasAccessTo(PageList.DASHBOARD, currentUser)) {
       navigate('/account');
       return null
   }
